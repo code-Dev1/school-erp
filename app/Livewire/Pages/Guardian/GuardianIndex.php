@@ -3,6 +3,7 @@
 namespace App\Livewire\Pages\Guardian;
 
 use App\Models\Guardian;
+use App\Support\School\OptionLists;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Url;
 use Livewire\Component;
@@ -40,7 +41,26 @@ class GuardianIndex extends Component
 
     public function render()
     {
-        $guardians = Guardian::query()
+        return view('livewire.pages.guardian.guardian-index', $this->viewData())->layout('layouts.app', [
+            'title' => 'سرپرستان',
+            'breadcrumbs' => [
+                ['label' => 'داشبورد', 'url' => route('dashboard')],
+                ['label' => 'سرپرستان'],
+            ],
+        ]);
+    }
+
+    private function viewData(): array
+    {
+        return [
+            'guardians' => $this->guardians(),
+            'statusOptions' => OptionLists::guardianStatuses(),
+        ];
+    }
+
+    private function guardians()
+    {
+        return Guardian::query()
             ->withCount('students')
             ->when($this->search !== '', function (Builder $query): void {
                 $search = trim($this->search);
@@ -61,19 +81,5 @@ class GuardianIndex extends Component
             ->when($this->status !== '', fn (Builder $query) => $query->where('status', $this->status))
             ->latest('id')
             ->paginate(12);
-
-        return view('livewire.pages.guardian.guardian-index', [
-            'guardians' => $guardians,
-            'statusOptions' => [
-                'active' => 'فعال',
-                'inactive' => 'غیرفعال',
-            ],
-        ])->layout('layouts.app', [
-            'title' => 'سرپرستان',
-            'breadcrumbs' => [
-                ['label' => 'داشبورد', 'url' => route('dashboard')],
-                ['label' => 'سرپرستان'],
-            ],
-        ]);
     }
 }

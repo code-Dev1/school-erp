@@ -9,7 +9,6 @@ use App\Enums\Students\StudentGender;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -106,16 +105,14 @@ class Employee extends Model
         return $this->hasMany(Employee::class, 'reports_to');
     }
 
-    public function subjects(): BelongsToMany
-    {
-        return $this->belongsToMany(Subject::class, 'class_subject_teacher', 'teacher_id', 'subject_id')
-            ->withPivot(['class_id', 'academic_year_id'])
-            ->withTimestamps();
-    }
-
     public function timetables(): HasMany
     {
         return $this->hasMany(Timetable::class, 'teacher_id');
+    }
+
+    public function results(): HasMany
+    {
+        return $this->hasMany(StudentResult::class, 'teacher_id');
     }
 
     public function attendanceSummaries(): MorphMany

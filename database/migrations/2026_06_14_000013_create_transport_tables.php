@@ -1,6 +1,5 @@
 <?php
 
-use App\Enums\Transport\VehicleStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -9,41 +8,44 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('vehicles', function (Blueprint $table) {
+        Schema::create('transport_services', function (Blueprint $table) {
             $table->id();
-            $table->string('plate_number')->unique();
+            $table->string('vehicle_plate_number')->unique();
+            $table->unsignedSmallInteger('vehicle_capacity');
+            $table->string('vehicle_type')->nullable();
             $table->string('driver_name');
-            $table->string('driver_contact')->nullable()->index();
-            $table->unsignedSmallInteger('capacity');
-            $table->enum('status', array_column(VehicleStatus::cases(), 'value'))->default(VehicleStatus::Active->value)->index();
-            $table->timestamps();
-        });
-
-        Schema::create('transport_routes', function (Blueprint $table) {
-            $table->id();
-            $table->string('name')->unique();
-            $table->text('description')->nullable();
+            $table->string('driver_phone')->nullable()->index();
+            $table->string('driver_license_number')->nullable()->unique();
+            $table->decimal('driver_monthly_salary', 12, 2)->default(0);
+            $table->string('route_name');
+            $table->string('pickup_area')->nullable()->index();
+            $table->string('dropoff_area')->nullable()->index();
+            $table->decimal('monthly_fee', 12, 2)->default(0);
+            $table->string('status')->default('active')->index();
+            $table->text('note')->nullable();
             $table->timestamps();
         });
 
         Schema::create('student_transport', function (Blueprint $table) {
+            $table->id();
             $table->foreignId('student_id')->constrained('students')->cascadeOnDelete();
-            $table->foreignId('vehicle_id')->constrained('vehicles')->restrictOnDelete();
-            $table->foreignId('route_id')->constrained('transport_routes')->restrictOnDelete();
+            $table->foreignId('transport_service_id')->constrained('transport_services')->restrictOnDelete();
+            $table->foreignId('academic_year_id')->nullable()->constrained('academic_years')->nullOnDelete();
             $table->decimal('fee_amount', 12, 2)->default(0);
             $table->date('starts_at')->nullable()->index();
             $table->date('ends_at')->nullable()->index();
+            $table->string('status')->default('active')->index();
+            $table->text('note')->nullable();
             $table->timestamps();
 
-            $table->primary(['student_id', 'vehicle_id', 'route_id']);
-            $table->index(['vehicle_id', 'route_id']);
+            $table->unique(['student_id', 'transport_service_id'], 'student_transport_unique');
+            $table->index(['transport_service_id', 'status']);
         });
     }
 
     public function down(): void
     {
         Schema::dropIfExists('student_transport');
-        Schema::dropIfExists('transport_routes');
-        Schema::dropIfExists('vehicles');
+        Schema::dropIfExists('transport_services');
     }
 };

@@ -5,11 +5,9 @@ namespace App\Livewire\Pages\Student;
 use App\Enums\Students\GuardianRelationship;
 use App\Enums\Students\StudentGender;
 use App\Enums\Students\StudentStatus;
-use App\Models\AcademicClass;
 use App\Models\AcademicYear;
-use App\Models\Guardian;
-use App\Models\Section;
 use App\Models\Student;
+use App\Support\School\OptionLists;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
@@ -30,7 +28,6 @@ class StudentCreate extends Component
         'tazkira_number' => '',
         'gender' => '',
         'date_of_birth' => '',
-        
         'student_type' => 'new',
         'previous_school' => '',
         'class_id' => '',
@@ -41,6 +38,10 @@ class StudentCreate extends Component
         'note' => '',
     ];
 
+    protected $listeners = [
+        'guardianChanged' => 'setGuardian',
+    ];
+
     public function mount(): void
     {
         $this->form['asas_number'] = Student::generateAsasNumber();
@@ -48,11 +49,7 @@ class StudentCreate extends Component
         $this->form['status'] = StudentStatus::Active->value;
     }
 
-    protected $listeners = [
-        'guardianChanged' => 'setGuardian',
-    ];
-
-    public function setGuardian($id)
+    public function setGuardian($id): void
     {
         $this->form['guardian_id'] = $id ?: null;
     }
@@ -67,9 +64,11 @@ class StudentCreate extends Component
 
         $guardianId = $data['guardian_id'] ?? null;
         $guardianRelationship = $data['guardian_relationship'] ?? GuardianRelationship::Guardian->value;
+
         if ($guardianRelationship === '__custom') {
             $guardianRelationship = $data['custom_guardian_relationship'] ?? GuardianRelationship::Guardian->value;
         }
+
         unset($data['guardian_id'], $data['guardian_relationship'], $data['custom_guardian_relationship']);
 
         $data['name'] = trim(($data['first_name'] ?? '').' '.($data['last_name'] ?? ''));
@@ -149,61 +148,7 @@ class StudentCreate extends Component
 
     public function render()
     {
-        $guardianOptions = Guardian::query()
-            ->when($this->guardianSearch !== '', function ($query): void {
-                $search = trim($this->guardianSearch);
-
-                $query->where(function ($query) use ($search): void {
-                    $query
-                        ->where('name', 'like', "%{$search}%")
-                        ->orWhere('first_name', 'like', "%{$search}%")
-                        ->orWhere('last_name', 'like', "%{$search}%")
-                        ->orWhere('father_name', 'like', "%{$search}%")
-                        ->orWhere('phone', 'like', "%{$search}%")
-                        ->orWhere('contact_number', 'like', "%{$search}%")
-                        ->orWhere('tazkira_number', 'like', "%{$search}%");
-                });
-            })
-            ->orderBy('name')
-            ->limit(25)
-            ->get()
-            ->mapWithKeys(function (Guardian $guardian): array {
-                $name = $guardian->name ?: trim($guardian->first_name.' '.$guardian->last_name);
-                $phone = $guardian->phone ?: $guardian->contact_number;
-                $label = trim(($name ?: 'سرپرست #'.$guardian->id).($phone ? ' - '.$phone : ''));
-
-                return [$guardian->id => $label];
-            })
-            ->all();
-
-        return view('livewire.pages.student.student-create', [
-            'classOptions' => AcademicClass::query()->orderBy('name')->pluck('name', 'id')->all(),
-            'sectionOptions' => Section::query()->orderBy('name')->pluck('name', 'id')->all(),
-            'academicYearOptions' => AcademicYear::query()->orderByDesc('id')->pluck('name', 'id')->all(),
-            'guardianOptions' => $guardianOptions,
-            'guardianRelationshipOptions' => [
-                GuardianRelationship::Father->value => 'پدر',
-                GuardianRelationship::Mother->value => 'مادر',
-                GuardianRelationship::Uncle->value => 'کاکا',
-                GuardianRelationship::Brother->value => 'برادر',
-                GuardianRelationship::Guardian->value => 'سرپرست',
-                '__custom' => 'دیگر',
-            ],
-            'genderOptions' => [
-                StudentGender::Male->value => 'ذکور',
-                StudentGender::Female->value => 'اناث',
-            ],
-            'statusOptions' => [
-                StudentStatus::Active->value => 'فعال',
-                StudentStatus::Transferred->value => 'تبدیل شده',
-                StudentStatus::Graduated->value => 'فارغ',
-                StudentStatus::Expelled->value => 'اخراج شده',
-            ],
-            'studentTypeOptions' => [
-                'new' => 'جدید',
-                'transferred' => 'تبدیلی',
-            ],
-        ])->layout('layouts.app', [
+        return view('livewire.pages.student.student-create', $this->viewData())->layout('layouts.app', [
             'title' => 'ثبت نام شاگرد',
             'breadcrumbs' => [
                 ['label' => 'داشبورد', 'url' => route('dashboard')],
@@ -211,5 +156,19 @@ class StudentCreate extends Component
                 ['label' => 'ثبت نام'],
             ],
         ]);
+    }
+
+    private function viewData(): array
+    {
+        return [
+            'classOptions' => OptionLists::academicClasses(),
+            'sectionOptions' => OptionLists::sections(),
+            'academicYearOptions' => OptionLists::academicYears(),
+            'guardianOptions' => OptionLists::guardians($this->guardianSearch),
+            'guardianRelationshipOptions' => OptionLists::guardianRelationships(),
+            'genderOptions' => OptionLists::studentGenders(),
+            'statusOptions' => OptionLists::studentStatuses(),
+            'studentTypeOptions' => OptionLists::studentTypes(),
+        ];
     }
 }

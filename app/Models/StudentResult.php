@@ -46,6 +46,16 @@ class StudentResult extends Model
         return $this->belongsTo(Student::class);
     }
 
+    public function academicClass(): BelongsTo
+    {
+        return $this->belongsTo(AcademicClass::class, 'class_id');
+    }
+
+    public function section(): BelongsTo
+    {
+        return $this->belongsTo(Section::class);
+    }
+
     public function subject(): BelongsTo
     {
         return $this->belongsTo(Subject::class);
@@ -59,5 +69,10 @@ class StudentResult extends Model
     public function academicYear(): BelongsTo
     {
         return $this->belongsTo(AcademicYear::class);
+    }
+
+    public function recordedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'recorded_by');
     }
 }

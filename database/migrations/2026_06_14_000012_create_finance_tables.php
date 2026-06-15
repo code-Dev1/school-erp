@@ -33,16 +33,40 @@ return new class extends Migration
             $table->id();
             $table->foreignId('student_id')->constrained('students')->restrictOnDelete();
             $table->foreignId('fee_structure_id')->constrained('fee_structures')->restrictOnDelete();
+            $table->foreignId('academic_year_id')->nullable()->constrained('academic_years')->nullOnDelete();
+            $table->decimal('amount', 12, 2)->default(0);
             $table->decimal('amount_paid', 12, 2)->default(0);
+            $table->decimal('paid_amount', 12, 2)->default(0);
             $table->decimal('discount_amount', 12, 2)->default(0);
+            $table->decimal('remaining_amount', 12, 2)->default(0);
+            $table->date('due_date')->nullable()->index();
             $table->date('payment_date')->index();
+            $table->date('covers_from')->nullable()->index();
+            $table->date('covers_to')->nullable()->index();
+            $table->unsignedTinyInteger('months_count')->default(1);
             $table->enum('status', array_column(FeePaymentStatus::cases(), 'value'))->default(FeePaymentStatus::Pending->value)->index();
             $table->string('receipt_number')->unique();
             $table->foreignId('recorded_by')->nullable()->constrained('users')->nullOnDelete();
+            $table->text('note')->nullable();
             $table->timestamps();
 
             $table->index(['student_id', 'status']);
             $table->index(['fee_structure_id', 'status']);
+        });
+
+        Schema::create('fee_alerts', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('student_id')->constrained('students')->cascadeOnDelete();
+            $table->foreignId('fee_structure_id')->nullable()->constrained('fee_structures')->nullOnDelete();
+            $table->foreignId('fee_payment_id')->nullable()->constrained('fee_payments')->nullOnDelete();
+            $table->decimal('due_amount', 12, 2)->default(0);
+            $table->date('due_date')->index();
+            $table->string('status')->default('open')->index();
+            $table->timestamp('sent_at')->nullable()->index();
+            $table->text('message')->nullable();
+            $table->timestamps();
+
+            $table->index(['student_id', 'status', 'due_date']);
         });
 
         Schema::create('salary_components', function (Blueprint $table) {
@@ -113,6 +137,7 @@ return new class extends Migration
         Schema::dropIfExists('salaries');
         Schema::dropIfExists('payroll_records');
         Schema::dropIfExists('salary_components');
+        Schema::dropIfExists('fee_alerts');
         Schema::dropIfExists('fee_payments');
         Schema::dropIfExists('fee_structures');
         Schema::dropIfExists('fee_types');

@@ -41,17 +41,15 @@ class AcademicClass extends Model
         return $this->hasMany(Student::class, 'class_id');
     }
 
+    public function subjects(): HasMany
+    {
+        return $this->hasMany(Subject::class, 'class_id');
+    }
+
     public function studentHistory(): BelongsToMany
     {
         return $this->belongsToMany(Student::class, 'class_student', 'class_id', 'student_id')
             ->withPivot(['academic_year', 'status'])
-            ->withTimestamps();
-    }
-
-    public function subjects(): BelongsToMany
-    {
-        return $this->belongsToMany(Subject::class, 'class_subject_teacher', 'class_id', 'subject_id')
-            ->withPivot(['teacher_id', 'academic_year_id'])
             ->withTimestamps();
     }
 

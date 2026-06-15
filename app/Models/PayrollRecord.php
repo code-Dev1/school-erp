@@ -41,4 +41,9 @@ class PayrollRecord extends Model
     {
         return $this->belongsTo(Employee::class);
     }
+
+    public function recordedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'recorded_by');
+    }
 }

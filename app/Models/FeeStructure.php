@@ -31,6 +31,11 @@ class FeeStructure extends Model
         return $this->belongsTo(FeeType::class);
     }
 
+    public function academicYear(): BelongsTo
+    {
+        return $this->belongsTo(AcademicYear::class);
+    }
+
     public function payments(): HasMany
     {
         return $this->hasMany(FeePayment::class);

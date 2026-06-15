@@ -3,6 +3,7 @@
 namespace App\Livewire\Pages\Guardian;
 
 use App\Models\Guardian;
+use App\Support\School\OptionLists;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
 
@@ -63,12 +64,7 @@ class GuardianCreate extends Component
 
     public function render()
     {
-        return view('livewire.pages.guardian.guardian-create', [
-            'statusOptions' => [
-                'active' => 'فعال',
-                'inactive' => 'غیرفعال',
-            ],
-        ])->layout('layouts.app', [
+        return view('livewire.pages.guardian.guardian-create', $this->viewData())->layout('layouts.app', [
             'title' => 'ثبت سرپرست',
             'breadcrumbs' => [
                 ['label' => 'داشبورد', 'url' => route('dashboard')],
@@ -76,5 +72,12 @@ class GuardianCreate extends Component
                 ['label' => 'ثبت سرپرست'],
             ],
         ]);
+    }
+
+    private function viewData(): array
+    {
+        return [
+            'statusOptions' => OptionLists::guardianStatuses(),
+        ];
     }
 }

@@ -145,18 +145,26 @@ class Student extends Model
         return $this->hasMany(FeePayment::class);
     }
 
-    public function vehicles(): BelongsToMany
+    public function feeAlerts(): HasMany
     {
-        return $this->belongsToMany(Vehicle::class, 'student_transport')
-            ->withPivot(['route_id', 'fee_amount', 'starts_at', 'ends_at'])
+        return $this->hasMany(FeeAlert::class);
+    }
+
+    public function transportServices(): BelongsToMany
+    {
+        return $this->belongsToMany(TransportService::class, 'student_transport')
+            ->withPivot(['academic_year_id', 'fee_amount', 'starts_at', 'ends_at', 'status', 'note'])
             ->withTimestamps();
     }
 
-    public function transportRoutes(): BelongsToMany
+    public function transportAssignments(): HasMany
     {
-        return $this->belongsToMany(TransportRoute::class, 'student_transport', 'student_id', 'route_id')
-            ->withPivot(['vehicle_id', 'fee_amount', 'starts_at', 'ends_at'])
-            ->withTimestamps();
+        return $this->hasMany(StudentTransport::class);
+    }
+
+    public function sales(): HasMany
+    {
+        return $this->hasMany(StudentSale::class);
     }
 
     public function announcementRecipients(): MorphMany

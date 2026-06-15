@@ -2,8 +2,8 @@
 
 namespace App\Livewire\Pages\Student;
 
-use App\Enums\Students\StudentStatus;
 use App\Models\Student;
+use App\Support\School\OptionLists;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Url;
 use Livewire\Component;
@@ -41,7 +41,26 @@ class StudentIndex extends Component
 
     public function render()
     {
-        $students = Student::query()
+        return view('livewire.pages.student.student-index', $this->viewData())->layout('layouts.app', [
+            'title' => 'شاگردان',
+            'breadcrumbs' => [
+                ['label' => 'داشبورد', 'url' => route('dashboard')],
+                ['label' => 'شاگردان'],
+            ],
+        ]);
+    }
+
+    private function viewData(): array
+    {
+        return [
+            'students' => $this->students(),
+            'statusOptions' => OptionLists::studentStatuses(),
+        ];
+    }
+
+    private function students()
+    {
+        return Student::query()
             ->with(['academicClass', 'section', 'academicYear'])
             ->when($this->search !== '', function (Builder $query): void {
                 $search = trim($this->search);
@@ -61,21 +80,5 @@ class StudentIndex extends Component
             ->when($this->status !== '', fn (Builder $query) => $query->where('status', $this->status))
             ->latest('id')
             ->paginate(12);
-
-        return view('livewire.pages.student.student-index', [
-            'students' => $students,
-            'statusOptions' => [
-                StudentStatus::Active->value => 'فعال',
-                StudentStatus::Transferred->value => 'تبدیل شده',
-                StudentStatus::Graduated->value => 'فارغ',
-                StudentStatus::Expelled->value => 'اخراج شده',
-            ],
-        ])->layout('layouts.app', [
-            'title' => 'شاگردان',
-            'breadcrumbs' => [
-                ['label' => 'داشبورد', 'url' => route('dashboard')],
-                ['label' => 'شاگردان'],
-            ],
-        ]);
     }
 }

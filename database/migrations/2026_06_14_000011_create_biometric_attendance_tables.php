@@ -26,9 +26,13 @@ return new class extends Migration
         Schema::create('biometric_logs', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('biometric_uid')->index();
+            $table->nullableMorphs('person');
             $table->foreignId('device_id')->constrained('biometric_devices')->restrictOnDelete();
             $table->timestamp('timestamp')->index();
+            $table->timestamp('check_time')->nullable()->index();
             $table->enum('log_type', array_column(BiometricLogType::cases(), 'value'))->index();
+            $table->string('check_type')->nullable()->index();
+            $table->json('raw_data')->nullable();
             $table->timestamp('synced_at')->nullable()->index();
             $table->timestamps();
 

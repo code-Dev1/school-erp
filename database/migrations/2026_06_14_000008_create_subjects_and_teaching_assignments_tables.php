@@ -20,21 +20,10 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('class_subject_teacher', function (Blueprint $table) {
-            $table->foreignId('class_id')->constrained('classes')->restrictOnDelete();
-            $table->foreignId('subject_id')->constrained('subjects')->restrictOnDelete();
-            $table->foreignId('teacher_id')->constrained('employees')->restrictOnDelete();
-            $table->foreignId('academic_year_id')->constrained('academic_years')->restrictOnDelete();
-            $table->timestamps();
-
-            $table->primary(['class_id', 'subject_id', 'teacher_id', 'academic_year_id'], 'class_subject_teacher_primary');
-            $table->index(['teacher_id', 'academic_year_id']);
-        });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('class_subject_teacher');
         Schema::dropIfExists('subjects');
     }
 };

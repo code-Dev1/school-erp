@@ -47,4 +47,9 @@ class Timetable extends Model
     {
         return $this->belongsTo(Employee::class, 'teacher_id');
     }
+
+    public function academicYear(): BelongsTo
+    {
+        return $this->belongsTo(AcademicYear::class);
+    }
 }
