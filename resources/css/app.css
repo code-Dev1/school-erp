@@ -1,0 +1,88 @@
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100..900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+        color-scheme: light;
+    }
+
+    .dark {
+        color-scheme: dark;
+    }
+
+    [dir="rtl"] {
+        direction: rtl;
+    }
+
+    [x-cloak] {
+        display: none !important;
+    }
+
+    body {
+        font-family: 'Vazirmatn', Tahoma, Arial, sans-serif;
+    }
+}
+
+@layer components {
+    .ui-surface {
+        @apply border border-slate-200/80 bg-white/95 shadow-sm shadow-slate-950/[0.03] dark:border-slate-800 dark:bg-slate-950/90 dark:shadow-black/20;
+    }
+
+    .ui-glass {
+        @apply border border-white/40 bg-white/70 shadow-xl shadow-slate-950/[0.08] backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/65 dark:shadow-black/30;
+    }
+
+    .ui-focus {
+        @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-sky-400 dark:focus-visible:ring-offset-slate-950;
+    }
+
+    .ui-field {
+        @apply w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm transition duration-150 placeholder:text-slate-400 hover:border-slate-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:placeholder:text-slate-500 dark:hover:border-slate-600 dark:focus:border-sky-400 dark:focus:ring-sky-400/20 dark:disabled:bg-slate-900;
+    }
+
+    .ui-label {
+        @apply mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-200;
+    }
+
+    .ui-help {
+        @apply mt-1.5 text-xs leading-5 text-slate-500 dark:text-slate-400;
+    }
+
+    .ui-error {
+        @apply mt-1.5 text-xs font-medium leading-5 text-rose-600 dark:text-rose-400;
+    }
+
+    .ui-scrollbar {
+        scrollbar-width: thin;
+        scrollbar-color: rgb(148 163 184 / 0.6) transparent;
+    }
+
+    .ui-scrollbar::-webkit-scrollbar {
+        height: 8px;
+        width: 8px;
+    }
+
+    .ui-scrollbar::-webkit-scrollbar-thumb {
+        @apply rounded-full bg-slate-300 dark:bg-slate-700;
+    }
+}
+
+@layer utilities {
+    .animate-ui-shimmer {
+        background-size: 200% 100%;
+        animation: ui-shimmer 1.4s ease-in-out infinite;
+    }
+
+    @keyframes ui-shimmer {
+        0% {
+            background-position: 100% 0;
+        }
+
+        100% {
+            background-position: -100% 0;
+        }
+    }
+}
