@@ -12,10 +12,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Permission\Traits\HasRoles;
 
 class Employee extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, HasRoles, SoftDeletes;
 
     protected $fillable = [
         'employee_id',
