@@ -3,11 +3,11 @@
         class="flex flex-col gap-4 rounded-2xl border border-white/70 bg-white/85 p-5 shadow-xl shadow-slate-950/[0.04] backdrop-blur-xl dark:border-slate-800 dark:bg-slate-950/70 sm:flex-row sm:items-center sm:justify-between">
         <div>
             <p class="text-sm font-medium text-slate-500 dark:text-slate-400">مدیریت آموزشی</p>
-            <h2 class="mt-1 text-2xl font-bold tracking-normal text-slate-950 dark:text-white">صنف ها</h2>
+            <h2 class="mt-1 text-2xl font-bold tracking-normal text-slate-950 dark:text-white">بخش ها</h2>
         </div>
 
-        <x-ui.button href="{{ route('classes.create') }}" icon="plus" wire:navigate>
-            ثبت صنف
+        <x-ui.button href="{{ route('sections.create') }}" icon="plus" wire:navigate>
+            ثبت بخش
         </x-ui.button>
     </section>
 
@@ -19,8 +19,13 @@
 
     <x-ui.card>
         <div class="grid gap-4 md:grid-cols-[1fr_auto] md:items-end">
-            <x-ui.input type="search" label="جستجو" name="search" placeholder="نام صنف یا درجه"
-                wire:model.live.debounce.300ms="search" />
+            <x-ui.input
+                type="search"
+                label="جستجو"
+                name="search"
+                placeholder="نام بخش"
+                wire:model.live.debounce.300ms="search"
+            />
 
             <x-ui.button type="button" variant="secondary" wire:click="clearFilters">
                 پاک سازی
@@ -34,39 +39,45 @@
             <table class="min-w-full divide-y divide-slate-200 text-sm dark:divide-slate-800">
                 <thead class="bg-slate-50 text-slate-600 dark:bg-slate-900 dark:text-slate-300">
                     <tr>
-                        <th class="px-4 py-3 text-right font-semibold">نام صنف</th>
-                        <th class="px-4 py-3 text-right font-semibold">درجه</th>
-                        <th class="px-4 py-3 text-right font-semibold">بخش</th>
+                        <th class="px-4 py-3 text-right font-semibold">نام بخش</th>
+                        <th class="px-4 py-3 text-right font-semibold">تعداد صنف ها</th>
+                        <th class="px-4 py-3 text-right font-semibold">شاگردان</th>
                         <th class="px-4 py-3 text-right font-semibold">وضعیت</th>
                         <th class="px-4 py-3 text-left font-semibold">عملیات</th>
                     </tr>
                 </thead>
 
                 <tbody class="divide-y divide-slate-100 bg-white dark:divide-slate-800 dark:bg-slate-950">
-                    @forelse ($classes as $class)
+                    @forelse ($sections as $section)
                         <tr class="transition hover:bg-slate-50 dark:hover:bg-slate-900/80">
                             <td class="px-4 py-4 font-medium text-slate-950 dark:text-white">
-                                {{ $class->name }}
+                                {{ $section->name }}
                             </td>
 
                             <td class="px-4 py-4 text-slate-700 dark:text-slate-200">
-                                {{ $class->grade_level ?: 'ثبت نشده' }}
+                                {{ number_format($section->academic_classes_count) }}
                             </td>
 
                             <td class="px-4 py-4 text-slate-700 dark:text-slate-200">
-                                {{ $class->section?->name ?? 'ثبت نشده' }}
+                                {{ number_format($section->students_count) }}
                             </td>
 
                             <td class="px-4 py-4">
-                                <x-ui.badge variant="{{ $class->is_active ? 'success' : 'neutral' }}">
-                                    {{ $class->is_active ? 'فعال' : 'غیرفعال' }}
+                                <x-ui.badge variant="{{ $section->is_active ? 'success' : 'neutral' }}">
+                                    {{ $section->is_active ? 'فعال' : 'غیرفعال' }}
                                 </x-ui.badge>
                             </td>
 
                             <td class="px-4 py-4">
                                 <div class="flex justify-end">
-                                    <x-ui.button type="button" size="sm" variant="danger" icon="trash"
-                                        wire:click="delete({{ $class->id }})" wire:confirm="این صنف حذف شود؟">
+                                    <x-ui.button
+                                        type="button"
+                                        size="sm"
+                                        variant="danger"
+                                        icon="trash"
+                                        wire:click="delete({{ $section->id }})"
+                                        wire:confirm="این بخش حذف شود؟"
+                                    >
                                         حذف
                                     </x-ui.button>
                                 </div>
@@ -76,7 +87,7 @@
                         <tr>
                             <td colspan="5"
                                 class="px-6 py-14 text-center text-sm text-slate-500 dark:text-slate-400">
-                                صنفی ثبت نشده است.
+                                بخشی ثبت نشده است.
                             </td>
                         </tr>
                     @endforelse
@@ -84,9 +95,9 @@
             </table>
         </div>
 
-        @if ($classes->hasPages())
+        @if ($sections->hasPages())
             <div class="border-t border-slate-200 px-4 py-3 dark:border-slate-800">
-                {{ $classes->links() }}
+                {{ $sections->links() }}
             </div>
         @endif
     </section>

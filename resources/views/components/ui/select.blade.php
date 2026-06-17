@@ -45,9 +45,9 @@
 
             @foreach ($options as $value => $option)
                 @php
-                    $optionValue = is_array($option) ? $option['value'] ?? $value : (is_int($value) ? $option : $value);
+                    $optionValue = is_array($option) ? $option['id'] : $value;
 
-                    $optionLabel = is_array($option) ? $option['label'] ?? $optionValue : $option;
+                    $optionLabel = is_array($option) ? $option['label'] ?? ($option['name'] ?? $optionValue) : $option;
 
                     $optionDisabled = is_array($option) && ($option['disabled'] ?? false);
                 @endphp

@@ -51,8 +51,8 @@ use App\Livewire\Pages\Sales\SaleCreate;
 use App\Livewire\Pages\Sales\SaleEdit;
 use App\Livewire\Pages\Sales\SaleIndex;
 use App\Livewire\Pages\Sales\SaleShow;
-use App\Livewire\Pages\Settings\SettingCreate;
-use App\Livewire\Pages\Settings\SettingIndex;
+use App\Livewire\Pages\Section\SectionCreate;
+use App\Livewire\Pages\Section\SectionIndex;
 use App\Livewire\Pages\Student\StudentCreate;
 use App\Livewire\Pages\Student\StudentIndex;
 use App\Livewire\Pages\Timetable\TimetableCreate;
@@ -139,6 +139,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/permissions/create', PermissionCreate::class)->name('permissions.create');
     Route::get('/users', UserIndex::class)->name('users.index');
     Route::get('/users/create', UserCreate::class)->name('users.create');
-    Route::get('/settings', SettingIndex::class)->name('settings.index');
-    Route::get('/settings/create', SettingCreate::class)->name('settings.create');
+    Route::get('/sections/index', SectionIndex::class)->name('sections.index');
+    Route::get('/sections/create', SectionCreate::class)->name('sections.create');
+
 });
