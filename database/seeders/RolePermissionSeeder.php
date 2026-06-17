@@ -76,6 +76,12 @@ class RolePermissionSeeder extends Seeder
             'create_library',
             'update_library',
             'delete_library',
+            'read_dashboard',
+            'read_finance_dashboard',
+            'read_attendance_dashboard',
+            'read_academic_dashboard',
+            'read_transport_dashboard',
+            'read_library_dashboard',
             'manage_users',
             'manage_roles',
             'manage_permissions',
@@ -129,6 +135,7 @@ class RolePermissionSeeder extends Seeder
         $roles = [
             'Super Admin',
             'Admin',
+            'Manager',
             'Principal',
             'Accountant',
             'Teacher',
@@ -150,8 +157,41 @@ class RolePermissionSeeder extends Seeder
         Role::findByName('super-admin', $guard)->givePermissionTo(Permission::all());
 
         Role::findByName('Admin', $guard)->givePermissionTo(Permission::all());
+        Role::findByName('Manager', $guard)->givePermissionTo([
+            'read_dashboard',
+            'read_finance_dashboard',
+            'read_attendance_dashboard',
+            'read_academic_dashboard',
+            'read_transport_dashboard',
+            'read_library_dashboard',
+            'read_students',
+            'read_guardians',
+            'read_classes',
+            'read_subjects',
+            'read_teachers',
+            'read_staff',
+            'read_marks',
+            'read_timetables',
+            'read_payroll',
+            'read_expenses',
+            'read_transport',
+            'read_sales',
+            'read_inventory',
+            'read_biometric',
+            'read_library',
+            'reports.finance.view',
+            'reports.students.view',
+            'reports.attendance.view',
+            'reports.payroll.view',
+            'reports.expenses.view',
+        ]);
 
         Role::findByName('Principal', $guard)->givePermissionTo([
+            'read_dashboard',
+            'read_academic_dashboard',
+            'read_attendance_dashboard',
+            'read_transport_dashboard',
+            'read_library_dashboard',
             'read_students',
             'create_students',
             'update_students',
@@ -185,6 +225,10 @@ class RolePermissionSeeder extends Seeder
         ]);
 
         Role::findByName('Accountant', $guard)->givePermissionTo([
+            'read_dashboard',
+            'read_finance_dashboard',
+            'read_transport_dashboard',
+            'read_library_dashboard',
             'read_teachers',
             'read_staff',
             'read_payroll',
@@ -202,6 +246,9 @@ class RolePermissionSeeder extends Seeder
         ]);
 
         Role::findByName('Teacher', $guard)->givePermissionTo([
+            'read_dashboard',
+            'read_academic_dashboard',
+            'read_attendance_dashboard',
             'read_students',
             'read_marks',
             'create_marks',
@@ -210,11 +257,18 @@ class RolePermissionSeeder extends Seeder
         ]);
 
         Role::findByName('Staff', $guard)->givePermissionTo([
+            'read_dashboard',
             'read_students',
             'read_guardians',
         ]);
 
         Role::findByName('Viewer', $guard)->givePermissionTo([
+            'read_dashboard',
+            'read_finance_dashboard',
+            'read_attendance_dashboard',
+            'read_academic_dashboard',
+            'read_transport_dashboard',
+            'read_library_dashboard',
             'read_students',
             'read_guardians',
             'read_classes',
@@ -233,6 +287,12 @@ class RolePermissionSeeder extends Seeder
         ]);
 
         Role::findByName('deputy', $guard)->givePermissionTo([
+            'read_dashboard',
+            'read_finance_dashboard',
+            'read_attendance_dashboard',
+            'read_academic_dashboard',
+            'read_transport_dashboard',
+            'read_library_dashboard',
             'students.view',
             'students.create',
             'students.update',
@@ -259,6 +319,8 @@ class RolePermissionSeeder extends Seeder
         ]);
 
         Role::findByName('registrar', $guard)->givePermissionTo([
+            'read_dashboard',
+            'read_academic_dashboard',
             'students.view',
             'students.create',
             'students.update',
@@ -272,6 +334,9 @@ class RolePermissionSeeder extends Seeder
         ]);
 
         Role::findByName('teacher', $guard)->givePermissionTo([
+            'read_dashboard',
+            'read_academic_dashboard',
+            'read_attendance_dashboard',
             'students.view',
             'guardians.view',
             'students.results.manage',
@@ -280,6 +345,10 @@ class RolePermissionSeeder extends Seeder
         ]);
 
         Role::findByName('accountant', $guard)->givePermissionTo([
+            'read_dashboard',
+            'read_finance_dashboard',
+            'read_transport_dashboard',
+            'read_library_dashboard',
             'students.view',
             'guardians.view',
             'fees.manage',
@@ -295,6 +364,8 @@ class RolePermissionSeeder extends Seeder
         ]);
 
         Role::findByName('parent', $guard)->givePermissionTo([
+            'read_dashboard',
+            'read_academic_dashboard',
             'students.view',
             'reports.students.view',
         ]);
