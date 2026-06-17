@@ -11,10 +11,12 @@
 
 @php
     $id = $id ?: ($name ?: 'searchable-select-'.Illuminate\Support\Str::random(8));
-    $items = collect($options)->map(function ($option, $value) {
+    $optionItems = $options instanceof \Illuminate\Support\Collection ? $options->all() : $options;
+    $optionsAreList = is_array($optionItems) && array_is_list($optionItems);
+    $items = collect($optionItems)->map(function ($option, $value) use ($optionsAreList) {
         return is_array($option)
             ? ['value' => $option['value'] ?? $value, 'label' => $option['label'] ?? ($option['value'] ?? $value)]
-            : ['value' => is_int($value) ? $option : $value, 'label' => $option];
+            : ['value' => $optionsAreList ? $option : $value, 'label' => $option];
     })->values();
     $errorBag = $errors ?? new Illuminate\Support\ViewErrorBag;
     $errorText = $error ?: ($name && $errorBag->has($name) ? $errorBag->first($name) : null);

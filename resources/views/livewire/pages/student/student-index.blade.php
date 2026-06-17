@@ -91,7 +91,30 @@
                                 </span>
                             </td>
                             <td class="px-4 py-4">
-                                <div class="flex justify-end">
+                                <div class="flex justify-end items-center gap-2">
+                                    @if (Route::has('student.show'))
+                                        <x-ui.button
+                                            type="button"
+                                            size="sm"
+                                            variant="primary"
+                                            icon="eye"
+                                            href="{{ route('student.show', $student) }}"
+                                            wire:navigate
+                                        >
+                                            مشاهده
+                                        </x-ui.button>
+                                    @endif
+                                    <x-ui.button
+                                        type="button"
+                                        size="sm"
+                                        variant="secondary"
+                                        icon="pencil"
+                                        href="{{ route('student.edit', $student) }}"
+                                        wire:navigate
+                                    >
+                                        ویرایش
+                                    </x-ui.button>
+
                                     <x-ui.button
                                         type="button"
                                         size="sm"

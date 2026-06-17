@@ -52,9 +52,31 @@
                                 <x-ui.badge variant="{{ $status === 'active' ? 'success' : 'neutral' }}">{{ $statusOptions[$status] ?? $status }}</x-ui.badge>
                             </td>
                             <td class="px-4 py-4">
-                                <div class="flex justify-end">
+                                <div class="flex justify-end items-center gap-2">
+                                    @if (Route::has('staff.show'))
+                                        <x-ui.button
+                                            type="button"
+                                            size="sm"
+                                            variant="primary"
+                                            icon="eye"
+                                            href="{{ route('staff.show', $staff) }}"
+                                            wire:navigate
+                                        >
+                                            مشاهده
+                                        </x-ui.button>
+                                    @endif
                                     <x-ui.button type="button" size="sm" variant="danger" icon="trash" wire:click="delete({{ $staff->id }})" wire:confirm="این کارمند حذف شود؟">
                                         حذف
+                                    </x-ui.button>
+                                    <x-ui.button
+                                        type="button"
+                                        size="sm"
+                                        variant="secondary"
+                                        icon="pencil"
+                                        href="{{ route('staff.edit', $staff) }}"
+                                        wire:navigate
+                                    >
+                                        ویرایش
                                     </x-ui.button>
                                 </div>
                             </td>

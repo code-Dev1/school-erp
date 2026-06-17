@@ -82,7 +82,7 @@ class MarkCreate extends Component
         return [
             'form.student_id' => [
                 'required',
-                'exists:students,id',
+                Rule::exists('students', 'id')->where(fn ($query) => $query->where('class_id', $this->form['class_id'] ?? null)->where('section_id', $this->form['section_id'] ?? null)),
                 Rule::unique('student_results', 'student_id')->where(fn ($query) => $query
                     ->where('subject_id', $this->form['subject_id'])
                     ->where('academic_year_id', $this->form['academic_year_id'])
@@ -90,8 +90,8 @@ class MarkCreate extends Component
                     ->where('exam_name', $this->form['exam_name'])),
             ],
             'form.class_id' => ['required', 'exists:classes,id'],
-            'form.section_id' => ['required', 'exists:sections,id'],
-            'form.subject_id' => ['required', 'exists:subjects,id'],
+            'form.section_id' => ['required', Rule::exists('sections', 'id')->where(fn ($query) => $query->where('class_id', $this->form['class_id'] ?? null))],
+            'form.subject_id' => ['required', Rule::exists('subjects', 'id')->where(fn ($query) => $query->where('class_id', $this->form['class_id'] ?? null))],
             'form.teacher_id' => ['nullable', 'exists:employees,id'],
             'form.academic_year_id' => ['required', 'exists:academic_years,id'],
             'form.term' => ['required', 'string', 'max:255'],
@@ -125,7 +125,7 @@ class MarkCreate extends Component
             'studentOptions' => OptionLists::students($this->form['class_id'] ?? null, $this->form['section_id'] ?? null),
             'classOptions' => OptionLists::academicClasses(),
             'sectionOptions' => OptionLists::sections($this->form['class_id'] ?? null),
-            'subjectOptions' => OptionLists::subjects(),
+            'subjectOptions' => OptionLists::subjects($this->form['class_id'] ?? null),
             'teacherOptions' => OptionLists::teachers(),
             'academicYearOptions' => OptionLists::academicYears(),
             'termOptions' => OptionLists::terms(),

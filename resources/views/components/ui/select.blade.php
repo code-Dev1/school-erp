@@ -12,6 +12,8 @@
 
 @php
     $id = $id ?: ($name ?: 'select-' . Illuminate\Support\Str::random(8));
+    $optionItems = $options instanceof \Illuminate\Support\Collection ? $options->all() : $options;
+    $optionsAreList = is_array($optionItems) && array_is_list($optionItems);
 
     $errorBag = $errors ?? new Illuminate\Support\ViewErrorBag();
 
@@ -43,9 +45,9 @@
                 <option value="">{{ $placeholder }}</option>
             @endif
 
-            @foreach ($options as $value => $option)
+            @foreach ($optionItems as $value => $option)
                 @php
-                    $optionValue = is_array($option) ? $option['value'] ?? $value : (is_int($value) ? $option : $value);
+                    $optionValue = is_array($option) ? $option['value'] ?? $value : ($optionsAreList ? $option : $value);
 
                     $optionLabel = is_array($option) ? $option['label'] ?? $optionValue : $option;
 

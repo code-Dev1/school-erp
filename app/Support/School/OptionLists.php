@@ -105,9 +105,10 @@ class OptionLists
             ->all();
     }
 
-    public static function subjects(): array
+    public static function subjects(int|string|null $classId = null): array
     {
         return Subject::query()
+            ->when($classId, fn (Builder $query) => $query->where('class_id', $classId))
             ->orderBy('name')
             ->pluck('name', 'id')
             ->all();

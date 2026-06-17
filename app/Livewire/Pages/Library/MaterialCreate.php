@@ -46,7 +46,7 @@ class MaterialCreate extends Component
     {
         return [
             'form.class_id' => ['nullable', 'exists:classes,id'],
-            'form.subject_id' => ['nullable', 'exists:subjects,id'],
+            'form.subject_id' => ['nullable', Rule::exists('subjects', 'id')->where(fn ($query) => $query->where('class_id', $this->form['class_id'] ?? null))],
             'form.teacher_id' => ['nullable', 'exists:employees,id'],
             'form.title' => ['required', 'string', 'max:255'],
             'form.type' => ['required', Rule::in(array_keys(OptionLists::materialTypes()))],
@@ -73,7 +73,7 @@ class MaterialCreate extends Component
     {
         return [
             'classOptions' => OptionLists::academicClasses(),
-            'subjectOptions' => OptionLists::subjects(),
+            'subjectOptions' => OptionLists::subjects($this->form['class_id'] ?? null),
             'teacherOptions' => OptionLists::teachers(),
             'typeOptions' => OptionLists::materialTypes(),
             'statusOptions' => OptionLists::activeStatuses(),

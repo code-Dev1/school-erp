@@ -107,7 +107,7 @@
             'active' => request()->routeIs('library.*', 'resources.*'),
             'children' => [
                 ['label' => 'کتاب‌ها',   'href' => $safeRoute('library.books.index'),     'icon' => 'book-open',      'active' => request()->routeIs('library.books.*')],
-                ['label' => 'امانت کتاب', 'href' => $safeRoute('library.loans.index'),     'icon' => 'arrow-path',     'active' => request()->routeIs('library.loans.*')],
+                // ['label' => 'امانت کتاب', 'href' => $safeRoute('library.loans.index'),     'icon' => 'arrow-path',     'active' => request()->routeIs('library.loans.*')],
                 ['label' => 'مواد درسی', 'href' => $safeRoute('library.materials.index'), 'icon' => 'rectangle-stack', 'active' => request()->routeIs('library.materials.*')],
             ],
         ],

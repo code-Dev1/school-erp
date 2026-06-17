@@ -47,8 +47,8 @@ class TimetableCreate extends Component
     {
         return [
             'form.class_id' => ['required', 'exists:classes,id'],
-            'form.section_id' => ['required', 'exists:sections,id'],
-            'form.subject_id' => ['required', 'exists:subjects,id'],
+            'form.section_id' => ['required', Rule::exists('sections', 'id')->where(fn ($query) => $query->where('class_id', $this->form['class_id'] ?? null))],
+            'form.subject_id' => ['required', Rule::exists('subjects', 'id')->where(fn ($query) => $query->where('class_id', $this->form['class_id'] ?? null))],
             'form.teacher_id' => ['required', 'exists:employees,id'],
             'form.academic_year_id' => ['required', 'exists:academic_years,id'],
             'form.day_of_week' => ['required', Rule::in(array_column(DayOfWeek::cases(), 'value'))],
@@ -83,7 +83,7 @@ class TimetableCreate extends Component
         return [
             'classOptions' => OptionLists::academicClasses(),
             'sectionOptions' => OptionLists::sections($this->form['class_id'] ?? null),
-            'subjectOptions' => OptionLists::subjects(),
+            'subjectOptions' => OptionLists::subjects($this->form['class_id'] ?? null),
             'teacherOptions' => OptionLists::teachers(),
             'academicYearOptions' => OptionLists::academicYears(),
             'dayOptions' => OptionLists::daysOfWeek(),

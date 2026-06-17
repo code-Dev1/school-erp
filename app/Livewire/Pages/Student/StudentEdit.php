@@ -14,11 +14,13 @@ use Illuminate\Validation\Rule;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
-class StudentCreate extends Component
+class StudentEdit extends Component
 {
     use WithFileUploads;
 
+    public Student $student;
     public $photo = null;
+    public bool $removePhoto = false;
     public string $guardianSearch = '';
 
     public array $form = [
@@ -47,11 +49,30 @@ class StudentCreate extends Component
         'guardianChanged' => 'setGuardian',
     ];
 
-    public function mount(): void
+    public function mount(Student $student): void
     {
-        $this->form['asas_number'] = Student::generateAsasNumber();
-        $this->form['admission_date'] = now()->format('Y-m-d');
-        $this->form['status'] = StudentStatus::Active->value;
+        $this->student = $student;
+        $this->form = [
+            'asas_number' => $student->asas_number,
+            'guardian_id' => $student->primaryGuardian->first()?->id,
+            'guardian_relationship' => $student->primaryGuardian->first()?->pivot->relationship ?? 'guardian',
+            'custom_guardian_relationship' => '',
+            'first_name' => $student->first_name,
+            'last_name' => $student->last_name,
+            'father_name' => $student->father_name,
+            'grandfather_name' => $student->grandfather_name,
+            'tazkira_number' => $student->tazkira_number,
+            'gender' => $student->gender?->value ?? '',
+            'date_of_birth' => $student->date_of_birth?->format('Y-m-d'),
+            'student_type' => $student->student_type,
+            'previous_school' => $student->previous_school,
+            'class_id' => $student->class_id,
+            'section_id' => $student->section_id,
+            'academic_year_id' => $student->academic_year_id,
+            'admission_date' => $student->admission_date?->format('Y-m-d'),
+            'status' => $student->status?->value ?? 'active',
+            'note' => $student->note,
+        ];
     }
 
     public function setGuardian($id): void
@@ -61,15 +82,12 @@ class StudentCreate extends Component
 
     public function save()
     {
-        $validated = $this->validate()['form'];
+        $validated = $this->validate();
+        $form = $validated['form'];
 
-        $data = collect($validated)
+        $data = collect($form)
             ->map(fn ($value) => $value === '' ? null : $value)
             ->all();
-
-        if ($this->photo) {
-            $data['photo_path'] = $this->storePhoto($this->photo);
-        }
 
         $guardianId = $data['guardian_id'] ?? null;
         $guardianRelationship = $data['guardian_relationship'] ?? GuardianRelationship::Guardian->value;
@@ -84,13 +102,23 @@ class StudentCreate extends Component
         $data['province'] = null;
         $data['district'] = null;
         $data['village'] = null;
+        $data['note'] = $data['note'] ?: null;
 
-        $student = Student::create($data);
+        if ($this->removePhoto && ! $this->photo) {
+            Storage::disk('public')->delete($this->student->photo_path);
+            $data['photo_path'] = null;
+        }
 
-        $this->syncPrimaryGuardian($student, $guardianId, $guardianRelationship);
-        $this->syncClassHistory($student, $data);
+        if ($this->photo) {
+            $data['photo_path'] = $this->storePhoto($this->photo, $this->student->photo_path);
+        }
 
-        session()->flash('status', 'شاگرد با موفقیت ثبت شد.');
+        $this->student->update($data);
+
+        $this->syncPrimaryGuardian($this->student, $guardianId, $guardianRelationship);
+        $this->syncClassHistory($this->student, $data);
+
+        session()->flash('status', 'اطلاعات شاگرد با موفقیت به روز شد.');
 
         return redirect()->route('student-index');
     }
@@ -98,7 +126,7 @@ class StudentCreate extends Component
     protected function rules(): array
     {
         return [
-            'form.asas_number' => ['required', 'string', 'max:255', Rule::unique('students', 'asas_number')],
+            'form.asas_number' => ['required', 'string', 'max:255', Rule::unique('students', 'asas_number')->ignore($this->student->id)],
             'form.guardian_id' => ['nullable', 'exists:guardians,id'],
             'form.guardian_relationship' => ['nullable', 'string', 'max:100'],
             'form.custom_guardian_relationship' => [
@@ -111,7 +139,7 @@ class StudentCreate extends Component
             'form.last_name' => ['required', 'string', 'max:255'],
             'form.father_name' => ['required', 'string', 'max:255'],
             'form.grandfather_name' => ['required', 'string', 'max:255'],
-            'form.tazkira_number' => ['required', 'string', 'max:255', Rule::unique('students', 'tazkira_number')],
+            'form.tazkira_number' => ['required', 'string', 'max:255', Rule::unique('students', 'tazkira_number')->ignore($this->student->id)],
             'form.gender' => ['required', Rule::in(array_column(StudentGender::cases(), 'value'))],
             'form.date_of_birth' => ['nullable', 'date'],
             'form.student_type' => ['required', Rule::in(['new', 'transferred'])],
@@ -123,6 +151,7 @@ class StudentCreate extends Component
             'form.status' => ['required', Rule::in(array_column(StudentStatus::cases(), 'value'))],
             'form.note' => ['nullable', 'string'],
             'photo' => ['nullable', 'image', 'max:2048'],
+            'removePhoto' => ['boolean'],
         ];
     }
 
@@ -167,12 +196,12 @@ class StudentCreate extends Component
 
     public function render()
     {
-        return view('livewire.pages.student.student-create', $this->viewData())->layout('layouts.app', [
-            'title' => 'ثبت نام شاگرد',
+        return view('livewire.pages.student.student-edit', $this->viewData())->layout('layouts.app', [
+            'title' => 'ویرایش شاگرد',
             'breadcrumbs' => [
                 ['label' => 'داشبورد', 'url' => route('dashboard')],
                 ['label' => 'شاگردان', 'url' => route('student-index')],
-                ['label' => 'ثبت نام'],
+                ['label' => 'ویرایش شاگرد'],
             ],
         ]);
     }

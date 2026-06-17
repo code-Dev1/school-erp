@@ -50,8 +50,37 @@
                                 <x-ui.badge variant="{{ $status === 'active' ? 'success' : 'neutral' }}">{{ $statusOptions[$status] ?? $status }}</x-ui.badge>
                             </td>
                             <td class="px-4 py-4">
-                                <div class="flex justify-end">
-                                    <x-ui.button type="button" size="sm" variant="danger" icon="trash" wire:click="delete({{ $teacher->id }})" wire:confirm="این استاد حذف شود؟">
+                                <div class="flex justify-end items-center gap-2">
+                                    @if (Route::has('teachers.show'))
+                                        <x-ui.button
+                                            type="button"
+                                            size="sm"
+                                            variant="primary"
+                                            icon="eye"
+                                            href="{{ route('teachers.show', $teacher) }}"
+                                            wire:navigate
+                                        >
+                                            مشاهده
+                                        </x-ui.button>
+                                    @endif
+                                    <x-ui.button
+                                        type="button"
+                                        size="sm"
+                                        variant="secondary"
+                                        icon="pencil"
+                                        href="{{ route('teachers.edit', $teacher) }}"
+                                        wire:navigate
+                                    >
+                                        ویرایش
+                                    </x-ui.button>
+                                    <x-ui.button
+                                        type="button"
+                                        size="sm"
+                                        variant="danger"
+                                        icon="trash"
+                                        wire:click="delete({{ $teacher->id }})"
+                                        wire:confirm="این استاد حذف شود؟"
+                                    >
                                         حذف
                                     </x-ui.button>
                                 </div>

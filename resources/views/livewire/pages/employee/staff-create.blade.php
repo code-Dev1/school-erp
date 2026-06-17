@@ -43,6 +43,24 @@
             </div>
         </x-ui.card>
 
+        <x-ui.card title="عکس کارمند" icon="photo" class="bg-slate-50/50">
+            <div class="space-y-4">
+                <x-ui.file-upload
+                    name="photo"
+                    wire:model="photo"
+                    label="انتخاب عکس کارمند"
+                    accept="image/*"
+                />
+
+                @if ($photo)
+                    <div class="rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
+                        <p class="text-sm text-slate-500">پیش‌نمایش عکس جدید:</p>
+                        <img src="{{ $photo->temporaryUrl() }}" alt="پیش نمایش عکس" class="mt-3 h-32 w-32 rounded-xl object-cover" />
+                    </div>
+                @endif
+            </div>
+        </x-ui.card>
+
         <x-ui.card title="قرارداد" icon="banknotes">
             <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
                 <x-ui.input type="date" label="تاریخ استخدام" name="form.hired_at" wire:model="form.hired_at" />
