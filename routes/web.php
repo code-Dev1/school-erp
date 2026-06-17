@@ -19,6 +19,7 @@ use App\Livewire\Pages\Biometric\DeviceCreate;
 use App\Livewire\Pages\Biometric\DeviceIndex;
 use App\Livewire\Pages\Biometric\LogCreate;
 use App\Livewire\Pages\Biometric\LogIndex;
+use App\Livewire\Pages\Dashboard\DashboardIndex;
 use App\Livewire\Pages\Employee\StaffCreate;
 use App\Livewire\Pages\Employee\StaffIndex;
 use App\Livewire\Pages\Employee\TeacherCreate;
@@ -70,7 +71,7 @@ Route::get('/', Login::class)
     ->middleware('guest');
 
 Route::middleware('auth')->group(function () {
-    Route::view('dashboard', 'dashboard')->name('dashboard');
+    Route::get('dashboard', DashboardIndex::class)->name('dashboard');
     Route::get('/guardian-create', GuardianCreate::class)->name('guardian-create');
     Route::get('/guardian-index', GuardianIndex::class)->name('guardian-index');
     Route::get('/student-create', StudentCreate::class)->name('student-create');
