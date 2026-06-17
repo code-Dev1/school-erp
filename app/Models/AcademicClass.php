@@ -16,24 +16,13 @@ class AcademicClass extends Model
     protected $fillable = [
         'name',
         'grade_level',
-        'academic_year',
-        'status',
-        'description',
-        'note',
         'is_active',
+        'section_id',
     ];
 
-    protected function casts(): array
+    public function sections()
     {
-        return [
-            'grade_level' => 'integer',
-            'is_active' => 'boolean',
-        ];
-    }
-
-    public function sections(): HasMany
-    {
-        return $this->hasMany(Section::class, 'class_id');
+        return $this->belongsTo(Section::class);
     }
 
     public function students(): HasMany

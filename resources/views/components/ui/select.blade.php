@@ -47,9 +47,13 @@
 
             @foreach ($optionItems as $value => $option)
                 @php
+<<<<<<< HEAD
                     $optionValue = is_array($option) ? $option['value'] ?? $value : ($optionsAreList ? $option : $value);
+=======
+                    $optionValue = is_array($option) ? $option['id'] : $value;
+>>>>>>> f94fdbb7c314d1e18395260d0f5b31f0893314fd
 
-                    $optionLabel = is_array($option) ? $option['label'] ?? $optionValue : $option;
+                    $optionLabel = is_array($option) ? $option['label'] ?? ($option['name'] ?? $optionValue) : $option;
 
                     $optionDisabled = is_array($option) && ($option['disabled'] ?? false);
                 @endphp

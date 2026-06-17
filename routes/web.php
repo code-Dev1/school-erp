@@ -19,6 +19,7 @@ use App\Livewire\Pages\Biometric\DeviceCreate;
 use App\Livewire\Pages\Biometric\DeviceIndex;
 use App\Livewire\Pages\Biometric\LogCreate;
 use App\Livewire\Pages\Biometric\LogIndex;
+use App\Livewire\Pages\Dashboard\DashboardIndex;
 use App\Livewire\Pages\Employee\StaffCreate;
 use App\Livewire\Pages\Employee\StaffEdit;
 use App\Livewire\Pages\Employee\StaffIndex;
@@ -54,8 +55,8 @@ use App\Livewire\Pages\Sales\SaleCreate;
 use App\Livewire\Pages\Sales\SaleEdit;
 use App\Livewire\Pages\Sales\SaleIndex;
 use App\Livewire\Pages\Sales\SaleShow;
-use App\Livewire\Pages\Settings\SettingCreate;
-use App\Livewire\Pages\Settings\SettingIndex;
+use App\Livewire\Pages\Section\SectionCreate;
+use App\Livewire\Pages\Section\SectionIndex;
 use App\Livewire\Pages\Student\StudentCreate;
 use App\Livewire\Pages\Student\StudentEdit;
 use App\Livewire\Pages\Student\StudentIndex;
@@ -76,7 +77,7 @@ Route::get('/', Login::class)
     ->middleware('guest');
 
 Route::middleware('auth')->group(function () {
-    Route::view('dashboard', 'dashboard')->name('dashboard');
+    Route::get('dashboard', DashboardIndex::class)->name('dashboard');
     Route::get('/guardian-create', GuardianCreate::class)->name('guardian-create');
     Route::get('/guardian-index', GuardianIndex::class)->name('guardian-index');
     Route::get('/student-create', StudentCreate::class)->name('student-create');
@@ -150,6 +151,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/permissions/create', PermissionCreate::class)->name('permissions.create');
     Route::get('/users', UserIndex::class)->name('users.index');
     Route::get('/users/create', UserCreate::class)->name('users.create');
-    Route::get('/settings', SettingIndex::class)->name('settings.index');
-    Route::get('/settings/create', SettingCreate::class)->name('settings.create');
+    Route::get('/sections/index', SectionIndex::class)->name('sections.index');
+    Route::get('/sections/create', SectionCreate::class)->name('sections.create');
+
 });

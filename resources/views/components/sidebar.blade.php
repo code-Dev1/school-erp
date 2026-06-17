@@ -34,9 +34,10 @@
         [
             'label'  => 'مدیریت آموزشی',
             'icon'   => 'book-open',
-            'active' => request()->routeIs('classes.*', 'academic-years.*', 'subjects.*', 'timetables.*'),
+            'active' => request()->routeIs('classes.*', 'academic-years.*', 'subjects.*', 'timetables.*','sections.*'),
             'children' => [
                 ['label' => 'صنف‌ها',      'href' => $safeRoute('classes.index'),        'icon' => 'building-office', 'active' => request()->routeIs('classes.*')],
+                ['label' => 'بخش ها',      'href' => $safeRoute('sections.index'),       'icon' => 'section',      'active' => request()->routeIs('sections.*')],
                 ['label' => 'مضامین',      'href' => $safeRoute('subjects.index'),       'icon' => 'book-open',      'active' => request()->routeIs('subjects.*')],
                 ['label' => 'تقسیم اوقات', 'href' => $safeRoute('timetables.index'),     'icon' => 'calendar-days',  'active' => request()->routeIs('timetables.*')],
                 ['label' => 'سال تعلیمی',  'href' => $safeRoute('academic-years.index'), 'icon' => 'calendar-days',  'active' => request()->routeIs('academic-years.*')],
@@ -131,7 +132,6 @@
                 ['label' => 'کاربران',       'href' => $safeRoute('users.index'),       'icon' => 'users',       'active' => request()->routeIs('users.*')],
                 ['label' => 'نقش‌ها',        'href' => $safeRoute('roles.index'),       'icon' => 'shield-check', 'active' => request()->routeIs('roles.*')],
                 ['label' => 'صلاحیت‌ها',     'href' => $safeRoute('permissions.index'), 'icon' => 'lock-closed', 'active' => request()->routeIs('permissions.*')],
-                ['label' => 'تنظیمات عمومی', 'href' => $safeRoute('settings.index'),   'icon' => 'cog-6-tooth', 'active' => request()->routeIs('settings.*')],
             ],
         ],
     ];

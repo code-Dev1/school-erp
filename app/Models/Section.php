@@ -12,24 +12,13 @@ class Section extends Model
     use HasFactory;
 
     protected $fillable = [
-        'class_id',
         'name',
-        'code',
-        'capacity',
         'is_active',
     ];
 
-    protected function casts(): array
+    public function academicClass()
     {
-        return [
-            'capacity' => 'integer',
-            'is_active' => 'boolean',
-        ];
-    }
-
-    public function academicClass(): BelongsTo
-    {
-        return $this->belongsTo(AcademicClass::class, 'class_id');
+        return $this->hasMany(AcademicClass::class);
     }
 
     public function students(): HasMany

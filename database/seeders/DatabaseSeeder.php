@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             RolePermissionSeeder::class,
-            SchoolLookupSeeder::class,
+            // SchoolLookupSeeder::class,
         ]);
 
         $user = User::query()->firstOrCreate(

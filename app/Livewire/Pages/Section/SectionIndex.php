@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Livewire\Pages\Academic;
+namespace App\Livewire\Pages\Section;
 
-use App\Models\AcademicClass;
+use App\Models\Section;
 use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-class AcademicClassIndex extends Component
+class SectionIndex extends Component
 {
     use WithPagination;
 
@@ -28,41 +28,41 @@ class AcademicClassIndex extends Component
         $this->resetPage();
     }
 
-    public function delete(int $classId): void
+    public function delete(int $sectionId): void
     {
-        AcademicClass::query()->findOrFail($classId)->delete();
+        Section::query()->findOrFail($sectionId)->delete();
 
-        session()->flash('status', 'صنف حذف شد.');
+        session()->flash('status', 'بخش حذف شد.');
     }
 
     public function render()
     {
-        return view('livewire.pages.academic.class-index', $this->viewData())->layout('layouts.app', [
-            'title' => 'صنف ها',
-            'breadcrumbs' => [
-                ['label' => 'داشبورد', 'url' => route('dashboard')],
-                ['label' => 'صنف ها'],
-            ],
-        ]);
+        return view('livewire.pages.section.section-index', $this->viewData())
+            ->layout('layouts.app', [
+                'title' => 'بخش ها',
+                'breadcrumbs' => [
+                    ['label' => 'داشبورد', 'url' => route('dashboard')],
+                    ['label' => 'بخش ها'],
+                ],
+            ]);
     }
 
     private function viewData(): array
     {
         return [
-            'classes' => $this->classes(),
+            'sections' => $this->sections(),
         ];
     }
 
-    private function classes()
+    private function sections()
     {
-        return AcademicClass::query()
-            ->with('sections')
+        return Section::query()
+            ->withCount(['academicClass', 'students', 'timetables', 'results'])
             ->when($this->search !== '', function (Builder $query): void {
                 $search = trim($this->search);
 
                 $query->where('name', 'like', "%{$search}%");
             })
-            ->orderBy('grade_level')
             ->orderBy('name')
             ->paginate(12);
     }
